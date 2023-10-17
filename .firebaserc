@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tallermecanicoapp-27c7a": {
+      "hosting": {
+        "app": [
+          "tallermecanicoapp-27c7a"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tallermecanicoapp-27c7a"
+  }
+}

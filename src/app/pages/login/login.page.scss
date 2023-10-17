@@ -1,0 +1,35 @@
+.content-center {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
+
+  /* Estilo para el enlace de restablecimiento de contraseña */
+.reset-password-link {
+color: rgb(61, 61, 244);
+text-decoration: none;
+text-align: right; /* Alinea el texto a la derecha */
+margin-top: 10px;
+}
+
+.logo {
+    border-radius: 50%; /* Hace que la imagen sea redonda */
+    width: 200px; /* Ajusta el ancho de la imagen según tus necesidades */
+    height:200px; /* Ajusta el alto de la imagen según tus necesidades */
+    margin: auto;
+    margin-top: 20px;
+  }
+
+.colorAzul{
+--background: rgb(73, 73, 206); 
+--color: white;
+}
+
+/* Estilo para los nombres de los desarrolladores */
+ion-footer ion-label {
+    display: block;
+    margin-top: 5px; /* Ajusta el margen superior según tus preferencias */
+  }

@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="colorAzul">
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon style="color: white;">menu</mat-icon>
+    </button>
+    
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Nuestros Servicios</button>
+      <button mat-menu-item>Nosotros</button>
+      <button mat-menu-item>Reservar Hora</button>
+      <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
+      <div class="centered-image">
+        <img src="assets/imagenes/logo.jpg" alt="Logo" class="logo-menu">
+      </div>
+    </mat-menu>
+
+    <div class="centered-text">
+      <p>{{mensaje}}</p>
+    </div>
+  </ion-toolbar>
+  
+</ion-header>
+
+
+
+<ion-content class="centered-content">
+  <capacitor-google-map #map></capacitor-google-map>
+
+
+  
+  <ion-list>
+    <ion-item *ngFor="let barcode of barcodes">
+      <ion-label position="stacked">{{ barcode.format }}</ion-label>
+      <ion-input type="text" [value]="barcode.rawValue"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="scan()" [disabled]="!isSupported">
+      <ion-icon name="scan"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center"> <!-- Alinea verticalmente el contenido -->
+      <ion-col size="6">
+        <ion-title>ServiExpress</ion-title>
+      </ion-col>
+      <ion-col size="6" class="ion-text-right"> <!-- Aplica alineación a la derecha -->
+        <ion-label>Stephania Lucero</ion-label>
+        <ion-label>Isabella Silva</ion-label>
+        <ion-label>Patricia Nieves</ion-label>
+        <ion-label>Loreto Miño</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>
