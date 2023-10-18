@@ -30,6 +30,10 @@ const routes: Routes = [
     path: 'contacto',
     loadChildren: () => import('./pages/contacto/contacto.module').then( m => m.ContactoPageModule)
   },
+  {
+    path: 'reservar-hora',
+    loadChildren: () => import('./pages/reservar-hora/reservar-hora.module').then( m => m.ReservarHoraPageModule)
+  },
 ];
 
 @NgModule({

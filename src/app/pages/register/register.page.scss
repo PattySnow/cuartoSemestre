@@ -1,0 +1,21 @@
+.content-center {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
+
+
+
+.colorAzul{
+--background: rgb(73, 73, 206); 
+--color: white;
+}
+
+/* Estilo para los nombres de los desarrolladores */
+ion-footer ion-label {
+    display: block;
+    margin-top: 5px; /* Ajusta el margen superior según tus preferencias */
+  }
