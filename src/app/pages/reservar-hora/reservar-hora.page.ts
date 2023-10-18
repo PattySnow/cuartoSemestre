@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router'; // Importa el Router
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservar-hora',
@@ -16,14 +16,18 @@ export class ReservarHoraPage {
   modelo: string = '';
   ano: number = 0;
   kilometraje: number = 0;
-  fechaHora: string = '';
+  selectedDate: any;
+  currentDate: any; // Cambiado a tipo 'any'
 
   constructor(
     private firestore: AngularFirestore,
     private afAuth: AngularFireAuth,
     private alertController: AlertController,
-    private router: Router // Agrega el Router
-  ) {}
+    private router: Router
+  ) {
+    // Obtiene la fecha actual en formato ISO para usarla como mínimo en el date picker.
+    this.currentDate = new Date().toISOString();
+  }
 
   async reservar() {
     try {
@@ -38,7 +42,7 @@ export class ReservarHoraPage {
           modelo: this.modelo,
           ano: this.ano,
           kilometraje: this.kilometraje,
-          fechaHora: this.fechaHora,
+          fecha: this.selectedDate, // Usa la propiedad selectedDate
           uidUsuario: uid,
         };
 
