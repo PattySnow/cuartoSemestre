@@ -5,8 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { AlertController } from '@ionic/angular';
-import { GoogleMap } from '@capacitor/google-maps';
-import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-home',
@@ -18,16 +17,7 @@ export class HomePage implements OnInit {
   userName: string = '';
   isSupported = false;
   barcodes: Barcode[] = [];
-
-  @ViewChild('map')
-  mapRef!: ElementRef<HTMLElement>;
-  newMap!: GoogleMap;
-  center: any = {
-
-    lat: -33.57109,
-    lng: -70.5874214,
-  };
-  markerId!: string;
+  segment: string = 'default'; // Define la propiedad segment y asigna un valor por defecto
 
   
   constructor(
@@ -52,32 +42,7 @@ export class HomePage implements OnInit {
     });
   }
 
-  ngAfterViewInit(){
-    this.createMap();
-  }
 
-  async createMap() {
-    this.newMap = await GoogleMap.create({
-      id: 'my-cool-map',
-      element: this.mapRef.nativeElement,
-      apiKey: environment.google_maps_api_key,
-      config: {
-        center: this.center,
-        zoom: 13,
-      },
-    });
-    this.addMarker(this.center.lat, this.center.lng);
-  }
-
-  async addMarker(lat: any, lng: any){
-    this.markerId = await this.newMap.addMarker({
-      coordinate:{
-        lat: lat,
-        lng: lng,
-      },
-      draggable: false
-    })
-  }
 
   getUserName(usuarioId: string) {
     this.firestore

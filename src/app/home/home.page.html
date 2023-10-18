@@ -24,7 +24,17 @@
 
 
 <ion-content class="centered-content">
-  <capacitor-google-map #map></capacitor-google-map>
+
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="default">
+      <ion-label>Inicio</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="contacto" [routerLink]="['/contacto']">
+      <ion-label>Contacto</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+ 
 
 
   
