@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { authGuardFn } from 'src/app/guards/auth-fn.guard';
 
 const routes: Routes = [
 
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    canActivate: [authGuardFn]
   },
 
   {
@@ -32,7 +34,8 @@ const routes: Routes = [
   },
   {
     path: 'reservar-hora',
-    loadChildren: () => import('./pages/reservar-hora/reservar-hora.module').then( m => m.ReservarHoraPageModule)
+    loadChildren: () => import('./pages/reservar-hora/reservar-hora.module').then( m => m.ReservarHoraPageModule),
+    canActivate: [authGuardFn]
   },
 ];
 
