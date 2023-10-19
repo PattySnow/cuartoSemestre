@@ -1,11 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { AlertController } from '@ionic/angular';
-
+import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -17,54 +15,48 @@ export class HomePage implements OnInit {
   userName: string = '';
   isSupported = false;
   barcodes: Barcode[] = [];
-  segment: string = 'default'; // Define la propiedad segment y asigna un valor por defecto
+  segment: string = 'default';
 
-  
   constructor(
     private rutaActiva: ActivatedRoute,
     private firestore: AngularFirestore,
     private authService: AuthService,
-    private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.rutaActiva.queryParams.subscribe((params) => {
-      if (params['usuario']) {
-        this.mensaje = `BIENVENIDO ${params['usuario'].toUpperCase()}`;
-        document.cookie = `usuario=${params['usuario']}; SameSite=None; Secure`;
-        this.getUserName(params['usuario']);
-      }
-    });
-
     BarcodeScanner.isSupported().then((result) => {
       this.isSupported = result.supported;
     });
+
+    this.authService.user.subscribe((user) => {
+      if (user) {
+        this.getUserName(user.uid);
+      }
+    });
   }
 
-
+  initCap(str: string): string {
+    if (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+    return '';
+  }
 
   getUserName(usuarioId: string) {
     this.firestore
-      .collection('Cliente')
+      .collection('clientes')
       .doc(usuarioId)
       .valueChanges()
       .subscribe((userData: any) => {
-        if (userData && userData.Nombre) {
-          this.userName = userData.Nombre;
+        if (userData && userData.nombre) {
+          this.userName = userData.nombre;
         } else {
           console.log('El documento no existe o no contiene el campo "Nombre".');
         }
         console.log('Nombre del usuario:', this.userName);
       });
-  }
-
-  doSomething() {
-    console.log('Opción 1 seleccionada');
-  }
-
-  doSomethingElse() {
-    console.log('Opción 2 seleccionada');
   }
 
   logout() {
@@ -80,11 +72,13 @@ export class HomePage implements OnInit {
   }
 
   async scan(): Promise<void> {
+    console.log('Ejecutando escáner de código de barras...');
     const granted = await this.requestPermissions();
     if (!granted) {
       this.presentAlert();
       return;
     }
+    console.log('Ejecutando scanner...'); // Agrega el console.log aquí
     const { barcodes } = await BarcodeScanner.scan();
     this.barcodes.push(...barcodes);
   }

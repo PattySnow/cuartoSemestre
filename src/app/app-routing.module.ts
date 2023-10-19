@@ -10,9 +10,16 @@ const routes: Routes = [
     canActivate: [authGuardFn]
   },
 
+ 
+
+  {
+    path: 'splash',
+    loadChildren: () => import('./pages/splash/splash.module').then( m => m.SplashPageModule)
+  },
+  
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'splash',
     pathMatch: 'full'
   },
 
@@ -37,6 +44,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/reservar-hora/reservar-hora.module').then( m => m.ReservarHoraPageModule),
     canActivate: [authGuardFn]
   },
+
+  
+
+
+  
 ];
 
 @NgModule({

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,8 @@ export class RegisterPage {
   constructor(
     private afAuth: AngularFireAuth,
     private router: Router,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private alertController: AlertController
   ) {}
 
   async register() {
@@ -30,21 +32,21 @@ export class RegisterPage {
         this.userData.email,
         this.userData.password
       );
-  
+
       if (userCredential.user) {
-        // Obtén el UID del usuario recién registrado
         const userId = userCredential.user.uid;
-  
-        // Almacena los datos directamente en Firestore junto con el UID del usuario
+
         await this.firestore.collection('clientes').doc(userId).set({
           nombre: this.userData.nombre,
           apellido: this.userData.apellido,
           telefono: this.userData.telefono,
           rut: this.userData.rut,
-          // Asegúrate de incluir el UID del usuario en el documento
           userId: userId,
         });
-  
+
+        // Muestra el mensaje emergente de agradecimiento
+        this.showRegistrationAlert();
+
         // Redirige al usuario a la página de inicio después del registro
         this.router.navigate(['/home']);
       } else {
@@ -54,6 +56,14 @@ export class RegisterPage {
       console.error('Error al registrar:', error);
     }
   }
-  
-  
+
+  async showRegistrationAlert() {
+    const alert = await this.alertController.create({
+      header: '¡Gracias por registrarte!',
+      message: 'Tu registro se ha completado con éxito.',
+      buttons: ['Aceptar']
+    });
+
+    await alert.present();
+  }
 }

@@ -4,60 +4,65 @@
 }
 
 .logo-menu {
-  width: 100px; /* Establece el ancho deseado */
-  height: auto; /* Mantiene la proporción original de la imagen */
-}
-
-
-.centered-image {
-  display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
-}
-
-/* Estilo para los nombres de los desarrolladores */
-ion-footer ion-label {
-  display: block;
-  margin-top: 5px;
-  /* Ajusta el margen superior según tus preferencias */
+  width: 100px;
+  height: auto;
 }
 
 .centered-text {
   text-align: center;
 }
 
-
-.servicios-card img {
-
-  max-height: 150px; /* Altura máxima deseada */
-  width: auto; /* Ancho automático para mantener la proporción */
-  margin: 0 auto; /* Centra horizontalmente la imagen */
+.centered-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
+/* Estilo para los nombres de los desarrolladores */
+ion-footer ion-label {
+  display: block;
+  margin-top: 5px;
+}
 
+.servicios-card img {
+  max-height: 150px;
+  width: auto;
+  margin: 0 auto;
+}
 
 .centered-card {
-  width: 80%; /* Ajusta el ancho del mat-card según tus preferencias */
+  width: 80%;
   margin: auto;
   margin-top: 30px;
 }
 
-.centered-header {
-  text-align: center; /* Centra horizontalmente la imagen */
-}
+
 
 .centered-title {
-  text-align: center; /* Centra horizontalmente el título */
+  text-align: center;
 }
 
-.titulo{
+.titulo {
   margin-top: 30px;
   text-align: center;
 }
 
-capacitor-google-map {
-  display: inline-block;
+/* Estilo para centrar verticalmente el menú y el saludo en el encabezado */
+.header-content {
+  display: flex;
+  align-items: center; /* Alinea verticalmente */
   width: 100%;
-  height: 100%;
+}
+.centered-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 20px; /* Espacio entre el contenido anterior y el botón de escáner */
+}
+
+.centered-button ion-icon {
+  font-size: 2rem; /* Tamaño del icono ajustado según tus preferencias */
 }
