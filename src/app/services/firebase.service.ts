@@ -23,7 +23,7 @@ export class FirebaseService {
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((doc) => doc.data());
   }
-
+  
   // Agregar un documento a una colección
   async addDocument(collectionName: string, data: any) {
     const docRef = await addDoc(collection(this.firestore, collectionName), data);

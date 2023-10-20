@@ -1,3 +1,30 @@
-<p>
-  ver-reservas works!
-</p>
+<div class="content">
+  <ion-list>
+
+    <ion-item-sliding *ngFor="let reserva of reservas">
+      <ion-item>
+        <ion-row class="ion-justify-content-center">
+          <ion-col>
+            <ion-label>Nro Patente</ion-label>
+            <p>{{ reserva.numeroPatente }}</p>
+          </ion-col>
+          <ion-col>
+            <ion-label>Fecha</ion-label>
+            <p>{{ reserva.fecha }}</p>
+          </ion-col>
+          <ion-col>
+            <ion-label>Hora</ion-label>
+            <p>{{ reserva.hora }}</p>
+          </ion-col>
+          <ion-col>
+            <ion-label></ion-label>
+            <ion-button color="danger" (click)="eliminarReserva(reserva)">
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+  
+</div>

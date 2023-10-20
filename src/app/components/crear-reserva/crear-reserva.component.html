@@ -1,0 +1,36 @@
+<div class="container">
+  <h1>Reservar Hora</h1>
+  <form (ngSubmit)="reservar()" #reservaForm="ngForm">
+    <div>
+      <label for="numeroPatente">Número de Patente</label>
+      <input type="text" [(ngModel)]="numeroPatente" name="numeroPatente">
+    </div>
+    <div>
+      <label for="marca">Marca</label>
+      <input type="text" [(ngModel)]="marca" name="marca">
+    </div>
+    <div>
+      <label for="modelo">Modelo</label>
+      <input type="text" [(ngModel)]="modelo" name="modelo">
+    </div>
+    <div>
+      <label for="ano">Año</label>
+      <input type="number" [(ngModel)]="ano" name="ano">
+    </div>
+    <div>
+      <label for="kilometraje">Kilometraje</label>
+      <input type="text" [(ngModel)]="kilometraje" name="kilometraje">
+    </div>
+    <div>
+      <label for="selectedDate">Fecha</label>
+      <input type="date" [(ngModel)]="selectedDate" name="selectedDate" min="{{ currentDate | date: 'yyyy-MM-dd' }}">
+    </div>
+    <div>
+      <label for="selectedHora">Hora</label>
+      <select [(ngModel)]="horaSeleccionada" name="selectedHora">
+        <option *ngFor="let hora of horasDisponibles" [value]="hora">{{ hora }}</option>
+      </select>
+    </div>
+    <button type="submit" [disabled]="!reservaForm.valid">Reservar</button>
+  </form>
+</div>

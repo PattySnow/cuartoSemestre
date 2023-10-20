@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, from, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -35,5 +35,18 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     return this.user.pipe(map((user: firebase.default.User | null) => user !== null));
+  }
+
+  // Obtener el token de usuario
+  getUserToken(): Observable<string | null> {
+    return this.user.pipe(
+      switchMap((user: firebase.default.User | null) => {
+        if (user) {
+          return from(user.getIdToken());
+        } else {
+          return of(null);
+        }
+      })
+    );
   }
 }

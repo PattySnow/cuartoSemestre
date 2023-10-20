@@ -14,6 +14,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { BarcodeComponent } from '../components/barcode/barcode.component';
 import { VerReservasComponent } from '../components/ver-reservas/ver-reservas.component';
 import { ContactoComponent } from '../components/contacto/contacto.component';
+import { CrearReservaComponent } from '../components/crear-reserva/crear-reserva.component';
+
+
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
@@ -29,7 +32,7 @@ import { ContactoComponent } from '../components/contacto/contacto.component';
     MatGridListModule,
 
   ],
-  declarations: [HomePage, BarcodeComponent, VerReservasComponent, ContactoComponent],
+  declarations: [HomePage, BarcodeComponent, VerReservasComponent, ContactoComponent, CrearReservaComponent],
 
 })
 export class HomePageModule {}

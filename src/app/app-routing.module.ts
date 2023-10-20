@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { authGuardFn } from 'src/app/guards/auth-fn.guard';
 
+
 const routes: Routes = [
 
   {
@@ -45,7 +46,7 @@ const routes: Routes = [
     canActivate: [authGuardFn]
   },
   
-
+  
 
 
   

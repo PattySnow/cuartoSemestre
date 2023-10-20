@@ -1,0 +1,42 @@
+/* crear-reserva.component.scss */
+
+/* Estilo para el contenedor principal */
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 20px; /* Margen en la parte superior del contenedor */
+  }
+  
+  /* Estilo para las etiquetas de los campos */
+  label {
+    font-weight: bold;
+  }
+  
+  /* Estilo para los campos de entrada */
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Estilo para el botón de reserva */
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Puedes cambiar el color de fondo */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Cambiar color de fondo en el botón al pasar el mouse */
+  button:hover {
+    background-color: #0056b3; /* Cambia el color al pasar el mouse */
+  }
+  

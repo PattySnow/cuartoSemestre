@@ -1,8 +1,9 @@
-export default interface reservas {
+export interface reservasI {
     id?: string;
-    ano: string;
+    ano: number;
     fecha: string;
-    kilometraje: string;
+    hora: string;
+    kilometraje: number;
     marca: string;
     modelo: string;
     numeroPatente: string;
