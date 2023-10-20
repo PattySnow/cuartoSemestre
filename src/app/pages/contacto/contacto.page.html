@@ -1,48 +1,29 @@
-<ion-header [translucent]="true">
-  <ion-toolbar class="colorAzul">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
 
-
-  </ion-toolbar>
-
-</ion-header>
-
-<ion-content class="centered-content">
-  <ion-segment [(ngModel)]="segment">
-    <ion-segment-button value="inicio" [routerLink]="['/home']">
-      <ion-label>Inicio</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="default">
-      <ion-label>Contacto</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-
+<div>
   <ion-card style="margin-top: 50px;"> <!-- 20px de margen superior -->
-    <div *ngIf="segment === 'default'">
-      <ion-card-content>
-        <ion-item>
-          <ion-icon name="location-outline" slot="start"></ion-icon>
-          <p>Dirección: Av. Concha y Toro 3854</p>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="call-outline" slot="start"></ion-icon>
-          <p>Teléfono: +56 9 12345678</p>
-        </ion-item>
-      </ion-card-content>
-    </div>
-  </ion-card>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-icon name="location-outline" slot="start"></ion-icon>
+        <p>Dirección: Av. Concha y Toro 3854</p>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <p>Teléfono: +56 9 12345678</p>
+      </ion-item>
+    </ion-card-content>
+
+</ion-card>
 
 
 
 
-  <capacitor-google-map #map></capacitor-google-map>
+<capacitor-google-map #map></capacitor-google-map>
+
+</div>
+
+  
 
 
 
 
-
-
-</ion-content>

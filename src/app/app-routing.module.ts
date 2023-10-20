@@ -44,8 +44,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/reservar-hora/reservar-hora.module').then( m => m.ReservarHoraPageModule),
     canActivate: [authGuardFn]
   },
-
   
+
 
 
   

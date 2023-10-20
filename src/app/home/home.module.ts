@@ -11,9 +11,9 @@ import {MatCardModule} from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { HomePageRoutingModule } from './home-routing.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
-
-
-
+import { BarcodeComponent } from '../components/barcode/barcode.component';
+import { VerReservasComponent } from '../components/ver-reservas/ver-reservas.component';
+import { ContactoComponent } from '../components/contacto/contacto.component';
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
@@ -27,8 +27,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
     MatMenuModule,
     MatCardModule,
     MatGridListModule,
+
   ],
-  declarations: [HomePage],
+  declarations: [HomePage, BarcodeComponent, VerReservasComponent, ContactoComponent],
 
 })
 export class HomePageModule {}

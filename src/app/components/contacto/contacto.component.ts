@@ -3,12 +3,12 @@ import { GoogleMap } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-contactoPage',
-  templateUrl: './contacto.page.html',
-  styleUrls: ['./contacto.page.scss'],
+  selector: 'app-contacto',
+  templateUrl: './contacto.component.html',
+  styleUrls: ['./contacto.component.scss'],
 })
-export class ContactoPage implements OnInit {
-  
+export class ContactoComponent  implements OnInit {
+
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
@@ -51,5 +51,6 @@ export class ContactoPage implements OnInit {
       draggable: false
     })
   }
+
 
 }

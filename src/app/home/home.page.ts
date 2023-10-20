@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AlertController } from '@ionic/angular';
-import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -11,25 +9,24 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  mensaje: string = '';
   userName: string = '';
-  isSupported = false;
-  barcodes: Barcode[] = [];
   segment: string = 'default';
+  showBarcode: boolean = false;
+  showContacto: boolean = false;
 
   constructor(
     private rutaActiva: ActivatedRoute,
     private firestore: AngularFirestore,
     private authService: AuthService,
-    private alertController: AlertController,
     private router: Router
   ) {}
 
-  ngOnInit() {
-    BarcodeScanner.isSupported().then((result) => {
-      this.isSupported = result.supported;
-    });
+  toggleBarcodeVisibility() {
+    this.showBarcode = this.segment === 'pagar';
+    this.showContacto = this.segment === 'contacto';
+  }
 
+  ngOnInit() {
     this.authService.user.subscribe((user) => {
       if (user) {
         this.getUserName(user.uid);
@@ -69,31 +66,5 @@ export class HomePage implements OnInit {
       .catch((error) => {
         console.error('Error al cerrar sesión:', error);
       });
-  }
-
-  async scan(): Promise<void> {
-    console.log('Ejecutando escáner de código de barras...');
-    const granted = await this.requestPermissions();
-    if (!granted) {
-      this.presentAlert();
-      return;
-    }
-    console.log('Ejecutando scanner...'); // Agrega el console.log aquí
-    const { barcodes } = await BarcodeScanner.scan();
-    this.barcodes.push(...barcodes);
-  }
-
-  async requestPermissions(): Promise<boolean> {
-    const { camera } = await BarcodeScanner.requestPermissions();
-    return camera === 'granted' || camera === 'limited';
-  }
-
-  async presentAlert(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Permission denied',
-      message: 'Please grant camera permission to use the barcode scanner.',
-      buttons: ['OK'],
-    });
-    await alert.present();
   }
 }
