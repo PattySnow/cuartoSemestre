@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/services/api.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
+import { FirestoreService } from 'src/app/services/firestore.service';
+import { AlertController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-ver-reservas',
@@ -16,40 +20,42 @@ export class VerReservasComponent implements OnInit {
   kilometraje: number = 0;
   selectedDate: string = ''; // Asegúrate de que selectedDate sea una cadena
   uid: string = ''; // Asigna el valor correcto a uid
+  horasDisponibles: string[] = ['10:00 am', '12:00 pm', '02:00 pm', '04:00 pm'];
+  horaSeleccionada: string = '';
 
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private firestoreService: FirestoreService,
+    public alertController: AlertController,
+    private authService: AuthService,
+    private http: HttpClient,
+    private afs: AngularFirestore // Agrega AngularFirestore
+  ) {}
 
   ngOnInit() {
-    this.apiService.obtenerReservas().subscribe((reservas: reservasI[]) => {
+    // Obtener la lista de reservas al cargar el componente
+    this.firestoreService.getCollection<reservasI>('reservas').subscribe((reservas: reservasI[]) => {
       this.reservas = reservas;
+      console.log('IDs de los documentos en la colección "reservas":');
+      reservas.forEach((reserva) => {
+        console.log(reserva.id); // Imprimir el ID de cada documento
+      });
+    });
+    // Obtener el UID del usuario actual
+    this.authService.getUid().subscribe((uid) => {
+      if (uid) {
+        this.uid = uid;
+        console.log('usuario id:', uid);
+      }
     });
   }
-
-  editarReserva(reserva: reservasI) {
-    // Implementa la lógica para editar una reserva, por ejemplo, navegando a una página de edición.
-    // Ejemplo:
-    // this.router.navigate(['/editar-reserva', reserva.id]);
+  deleteReserva(id: string) {
+    // Llamamos a la función deleteDoc del servicio para eliminar el documento por su ID
+    this.firestoreService.deleteDoc('reservas', id).then(() => {
+      // El documento se eliminó exitosamente
+      console.log('Documento eliminado con éxito');
+    }).catch(error => {
+      // Hubo un error al eliminar el documento
+      console.error('Error al eliminar el documento:', error);
+    });
   }
-  eliminarReserva(reserva: reservasI) {
-    console.log('Eliminar reserva llamado');
-    const confirmarEliminacion = window.confirm('¿Estás seguro de que deseas eliminar esta reserva?');
-    
-    if (confirmarEliminacion) {
-      if (reserva.id) {
-        this.apiService.eliminarReserva(reserva.id).then(() => {
-          console.log('Reserva eliminada exitosamente');
-          // Recargar la lista de reservas después de eliminar una reserva
-          this.apiService.obtenerReservas().subscribe((reservas: reservasI[]) => {
-            this.reservas = reservas;
-          });
-        }).catch(error => {
-          console.error('Error al eliminar reserva: ', error);
-        });
-      }
-    }
-  }
-
-  
-
-  
-}  
+}

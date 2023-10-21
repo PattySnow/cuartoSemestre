@@ -18,7 +18,7 @@
           </ion-col>
           <ion-col>
             <ion-label></ion-label>
-            <ion-button color="danger" (click)="eliminarReserva(reserva)">
+            <ion-button color="danger" (click)="reserva.id && deleteReserva(reserva.id)">
               <ion-icon name="trash"></ion-icon>
             </ion-button>
           </ion-col>

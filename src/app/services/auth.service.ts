@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Observable, from, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -48,5 +48,19 @@ export class AuthService {
         }
       })
     );
+  }
+
+  getUid() {
+    return this.user.pipe(
+      take(1), // Toma el primer valor y completa la suscripción
+      map((user: firebase.default.User | null) => {
+        return user ? user.uid : null;
+      })
+    );
+  }
+
+  async getCurrentUserUID(): Promise<string | null> {
+    const user = await this.auth.currentUser;
+    return user ? user.uid : null;
   }
 }
