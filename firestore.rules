@@ -1,0 +1,19 @@
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permite a los usuarios autenticados leer y escribir sus propios documentos en la colección "users"
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Permite a los usuarios autenticados leer y escribir en la colección "clientes"
+    match /clientes/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Permite a los usuarios autenticados leer y escribir en la colección "reservas"
+    match /reservas/{reservaId} {
+      allow read, write: if request.auth != null  ;
+    }
+  }
+}

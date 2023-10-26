@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from '../services/auth.service';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +13,11 @@ export class HomePage implements OnInit {
   segment: string = 'default';
   showBarcode: boolean = false;
   showContacto: boolean = false;
-  userToken: string | null = null; // Agregar userToken
 
   constructor(
     private rutaActiva: ActivatedRoute,
     private firestore: AngularFirestore,
     private authService: AuthService,
-    private afAuth: AngularFireAuth, // Agregar AngularFireAuth
     private router: Router
   ) {}
 
@@ -33,17 +30,8 @@ export class HomePage implements OnInit {
     this.authService.user.subscribe((user) => {
       if (user) {
         this.getUserName(user.uid);
-        this.getUserToken(); // Obtener el token cuando el usuario está autenticado
       }
     });
-  }
- 
-  async getUserToken() {
-    const user = await this.afAuth.currentUser;
-    if (user) {
-      this.userToken = await user.getIdToken();
-      console.log('Token de autenticación:', this.userToken);
-    }
   }
 
   initCap(str: string): string {

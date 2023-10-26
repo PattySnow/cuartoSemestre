@@ -5,6 +5,7 @@ import { VerReservasComponent } from './components/ver-reservas/ver-reservas.com
 import { CrearReservaComponent } from './components/crear-reserva/crear-reserva.component';
 import { ModificarReservaComponent } from './components/modificar-reserva/modificar-reserva.component';
 import { NotFoundPage } from './pages/not-found/not-found.page';
+import { ContactoComponent } from './components/contacto/contacto.component';
 
 
 
@@ -43,11 +44,10 @@ const routes: Routes = [
     path: 'reset-password',
     loadChildren: () => import('./pages/reset-password/reset-password.module').then(m => m.ResetPasswordPageModule)
   },
-  {
-    path: 'contacto',
-    loadChildren: () => import('./pages/contacto/contacto.module').then(m => m.ContactoPageModule)
-  },
-  
+{
+  path: 'contacto',
+  component: ContactoComponent
+},
   {
     path: 'crear-reserva',
     component: CrearReservaComponent,

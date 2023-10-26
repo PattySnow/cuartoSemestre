@@ -16,11 +16,12 @@ import { environment } from 'src/environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [AppComponent, ],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,AngularFireModule, HttpClientModule,
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,AngularFireModule, HttpClientModule, FormsModule,
     provideFirebaseApp(() => initializeApp({
       apiKey: "tu-api-key",
       authDomain: "tu-auth-domain",

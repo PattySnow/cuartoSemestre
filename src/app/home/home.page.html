@@ -10,7 +10,6 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Nuestros Servicios</button>
         <button mat-menu-item>Nosotros</button>
-        <button mat-menu-item [routerLink]="['/reservar-hora']">Reservar Hora</button>
         <button mat-menu-item [routerLink]="['mis-reservas']" >Ver Reservas</button>
         <button mat-menu-item [routerLink]="['/home/reservar-servicio']">Reservar hora</button>
         <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
@@ -46,13 +45,15 @@
         <ion-label>Pagar</ion-label>
       </ion-segment-button>
     </ion-segment>
+    
   </div>
 
 
   <!-- Muestra el componente <app-mis-reservas> si no está en la vista "Pagar" -->
-  <div *ngIf="segment !== 'pagar'">
-    <ion-router-outlet></ion-router-outlet>
-  </div>
+    <div *ngIf="segment === 'default'">
+      <router-outlet></router-outlet>
+    </div>
+    
 
   <!-- Muestra el componente <app-contacto> solo en la vista "Contacto" -->
   <div *ngIf="showContacto">
@@ -64,7 +65,7 @@
     <app-barcode></app-barcode>
   </div>
 
-    <router-outlet></router-outlet>
+    
 
 </ion-content>
 
