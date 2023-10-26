@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Modificar Reserva</h1>
+  <form (submit)="modificarReserva()">
+    <div>
+      <label for="selectedHora">Hora</label>
+      <select name="selectedHora">
+        <option *ngFor="let hora of horasDisponibles" [value]="hora">{{ hora }}</option>
+      </select>
+    </div>
+    <button type="submit">Guardar Cambios</button>
+  </form>
+</div>

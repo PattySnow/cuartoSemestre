@@ -1,30 +1,43 @@
-<div class="content">
-  <ion-list>
+<ion-header [translucent]="true">
+  <ion-toolbar class="colorAzul">
+    <ion-title>Mis Reservas</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content>
+  <ion-list>
     <ion-item-sliding *ngFor="let reserva of reservas">
       <ion-item>
-        <ion-row class="ion-justify-content-center">
-          <ion-col>
-            <ion-label>Nro Patente</ion-label>
-            <p>{{ reserva.numeroPatente }}</p>
-          </ion-col>
-          <ion-col>
-            <ion-label>Fecha</ion-label>
-            <p>{{ reserva.fecha }}</p>
-          </ion-col>
-          <ion-col>
-            <ion-label>Hora</ion-label>
-            <p>{{ reserva.hora }}</p>
-          </ion-col>
-          <ion-col>
-            <ion-label></ion-label>
-            <ion-button color="danger" (click)="reserva.id && deleteReserva(reserva.id)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
+        <ion-grid class="ion-text-center">
+          <ion-row>
+            <ion-col size="3">
+              <ion-label>Nro Patente</ion-label>
+              <p class="custom-text">{{ reserva.numeroPatente }}</p>
+            </ion-col>
+            <ion-col size="3">
+              <ion-label>Fecha</ion-label>
+              <p class="custom-text">{{ reserva.fecha }}</p>
+            </ion-col>
+            <ion-col size="3">
+              <ion-label>Hora</ion-label>
+              <p class="custom-text">{{ reserva.hora }}</p>
+            </ion-col>
+            <ion-col size="1">
+              <ion-button color="primary"  [routerLink]="['/modificar-reserva', reserva.id]">
+                <ion-icon name="create"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button color="danger" (click)="reserva.id && deleteReserva(reserva.id)">
+                <ion-icon name="trash"  ></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-item-sliding>
   </ion-list>
-  
-</div>
+</ion-content>

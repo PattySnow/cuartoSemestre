@@ -37,7 +37,7 @@ export class HomePage implements OnInit {
       }
     });
   }
-
+ 
   async getUserToken() {
     const user = await this.afAuth.currentUser;
     if (user) {

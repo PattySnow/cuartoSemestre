@@ -17,8 +17,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClientModule } from '@angular/common/http';
 
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,AngularFireModule, HttpClientModule,
     provideFirebaseApp(() => initializeApp({
       apiKey: "tu-api-key",
@@ -38,10 +39,5 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class AppModule {
   constructor(public router: Router) {
-    this.initializeApp();
-  }
-
-  initializeApp() {
-    this.router.navigateByUrl('splash');
   }
 }
