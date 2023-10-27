@@ -10,7 +10,7 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Nuestros Servicios</button>
         <button mat-menu-item>Nosotros</button>
-        <button mat-menu-item [routerLink]="['mis-reservas']" >Ver Reservas</button>
+        <button mat-menu-item [routerLink]="['/home/mis-reservas']" >Ver Reservas</button>
         <button mat-menu-item [routerLink]="['/home/reservar-servicio']">Reservar hora</button>
         <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
         <div class="centered-image">
@@ -65,7 +65,7 @@
     <app-barcode></app-barcode>
   </div>
 
-    
+  
 
 </ion-content>
 

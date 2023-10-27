@@ -23,13 +23,13 @@ import { FormsModule } from '@angular/forms';
   declarations: [AppComponent, ],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,AngularFireModule, HttpClientModule, FormsModule,
     provideFirebaseApp(() => initializeApp({
-      apiKey: "tu-api-key",
-      authDomain: "tu-auth-domain",
-      projectId: "tu-project-id",
-      storageBucket: "tu-storage-bucket",
-      messagingSenderId: "tu-messaging-sender-id",
-      appId: "tu-app-id",
-      measurementId: "tu-measurement-id"
+      apiKey: "AIzaSyAU_RtaPS2UcgmWRSmXW1N2RaqH3pc09fc",
+      authDomain: "tallermecanicoapp-27c7a.firebaseapp.com",
+      projectId: "tallermecanicoapp-27c7a",
+      storageBucket: "tallermecanicoapp-27c7a.appspot.com",
+      messagingSenderId: "174491079965",
+      appId: "1:174491079965:web:4fbbc0e3e9f389fd42fdf4",
+      measurementId: "G-GW6FNHPK25"
     })),
     provideFirestore(() => getFirestore()),],
   providers: [
