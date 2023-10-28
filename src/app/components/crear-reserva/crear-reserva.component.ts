@@ -27,13 +27,9 @@ export class CrearReservaComponent {
   currentDate: Date = new Date();
 
   onSubmit() {
-    this.authService.isAuthenticated().subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
+    
         this.crearReserva();
-      } else {
-        // El usuario no está autenticado, puedes mostrar un mensaje de error o redirigirlo a la página de inicio de sesión.
-      }
-    });
+      
   }
 
   crearReserva() {

@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ver-reservas',
@@ -34,7 +35,8 @@ export class VerReservasComponent implements OnInit {
     public alertController: AlertController,
     private authService: AuthService,
     private apiService: ApiService,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private router: Router, 
   ) {}
 
   ngOnInit() {
@@ -110,6 +112,11 @@ export class VerReservasComponent implements OnInit {
           if (response.status === "Success") {
             console.log('Reserva actualizada con éxito.');
             this.cancelarEdicion(); // Reinicia las propiedades para salir del modo de edición
+  
+            // Redirige al usuario a la página de "mis-reservas" después de una actualización exitosa
+            this.router.navigate(['/reservas/mis-reservas']);
+  
+          
           } else {
             console.error("Error al actualizar la reserva.");
           }
@@ -120,6 +127,8 @@ export class VerReservasComponent implements OnInit {
       );
     }
   }
+  
+
   
   cancelarEdicion() {
     this.editarReserva = false;

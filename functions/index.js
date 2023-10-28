@@ -19,18 +19,10 @@ app.use(cors({ origin: true }));
 
 const db = admin.firestore();
 
-
 // CREAR RESERVA (POST) 
 app.post("/api/create", (req, res) => {
     (async () => {
         try {
-            // Verifica si el usuario está autenticado y obtén su ID
-            const user = req.user; // Asumiendo que has configurado middleware para pasar la información del usuario en las solicitudes
-
-            if (!user) {
-                return res.status(401).send({ status: 'Failed', msg: 'Usuario no autenticado' });
-            }
-
             await db.collection('reservas').doc().create({
                 patente: req.body.patente,
                 marca: req.body.marca,
@@ -38,18 +30,16 @@ app.post("/api/create", (req, res) => {
                 anio: req.body.anio,
                 kilometraje: req.body.kilometraje,
                 fecha: req.body.fecha,
-                hora: req.body.hora,
-                uidUsuario: user.uid
+                hora: req.body.hora
             });
 
             return res.status(200).send({ status: 'Success', msg: 'Reserva registrada' });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return res.status(500).send({ status: 'Failed', msg: error });
         }
     })();
 });
-
 
 // OBTENER RESERVA POR ID (GET)
 

@@ -19,7 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormsModule } from '@angular/forms';
 
-import { AuthInterceptor } from './services/auth.interceptor'; // Importa el interceptor personalizado
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,11 +38,7 @@ import { AuthInterceptor } from './services/auth.interceptor'; // Importa el int
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor, 
-      multi: true,
-    },
+   
   ],
   bootstrap: [AppComponent],
 })
