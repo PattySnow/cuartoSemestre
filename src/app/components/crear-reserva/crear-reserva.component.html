@@ -1,39 +1,36 @@
-<div class="container">
+<div class="container" style="margin: 5%;">
   <h1>Reservar Hora</h1>
-  <form (ngSubmit)="reservar()" #reservaForm="ngForm">
+  <form (ngSubmit)="onSubmit()" #reservaForm="ngForm">
     <div>
-      <label for="numeroPatente">Número de Patente</label>
-      <input type="text" [(ngModel)]="numeroPatente" name="numeroPatente">
+      <label for="patente">Número de Patente</label>
+      <input type="text" [(ngModel)]="nuevaReserva.patente" name="patente" required>
     </div>
     <div>
       <label for="marca">Marca</label>
-      <input type="text" [(ngModel)]="marca" name="marca">
+      <input type="text" [(ngModel)]="nuevaReserva.marca" name="marca" required>
     </div>
     <div>
       <label for="modelo">Modelo</label>
-      <input type="text" [(ngModel)]="modelo" name="modelo">
+      <input type="text" [(ngModel)]="nuevaReserva.modelo" name="modelo" required>
     </div>
     <div>
       <label for="ano">Año</label>
-      <input type="number" [(ngModel)]="ano" name="ano">
+      <input type="number" [(ngModel)]="nuevaReserva.anio" name="ano" required>
     </div>
     <div>
       <label for="kilometraje">Kilometraje</label>
-      <input type="text" [(ngModel)]="kilometraje" name="kilometraje">
+      <input type="number" [(ngModel)]="nuevaReserva.kilometraje" name="kilometraje" required>
     </div>
     <div>
       <label for="selectedDate">Fecha</label>
-      <input type="date" [(ngModel)]="selectedDate" name="selectedDate" min="{{ currentDate | date: 'yyyy-MM-dd' }}">
+      <input type="date" [(ngModel)]="nuevaReserva.fecha" name="selectedDate" [min]="currentDate | date: 'yyyy-MM-dd'" required>
     </div>
     <div>
       <label for="selectedHora">Hora</label>
-      <select [(ngModel)]="horaSeleccionada" name="selectedHora">
+      <select [(ngModel)]="nuevaReserva.hora" name="selectedHora" required>
         <option *ngFor="let hora of horasDisponibles" [value]="hora">{{ hora }}</option>
       </select>
     </div>
     <button type="submit" [disabled]="!reservaForm.valid">Reservar</button>
   </form>
-</div>
-<div>
-  <router-outlet></router-outlet>
 </div>

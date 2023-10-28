@@ -1,43 +1,33 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { reservasI } from '../interfaces/reservas.interface';
+import { Observable } from 'rxjs';
+import { reservasI } from 'src/app/interfaces/reservas.interface'; 
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  reservas: reservasI[] = [];
+  private baseUrl = 'https://us-central1-tallermecanicoapp-27c7a.cloudfunctions.net/app/api';
 
-  constructor(
-    private firestore: AngularFirestore,
-    private http: HttpClient
-  ) {
-    this.obtenerReservas().subscribe((reservas) => {
-      this.reservas = reservas;
-    });
+  constructor(private http: HttpClient) {}
+
+  crearReserva(reserva: reservasI): Observable<any> {
+    return this.http.post(`${this.baseUrl}/create`, reserva);
   }
 
-  crearReserva(reserva: reservasI) {
-    return this.firestore.collection('reservas').add(reserva);
+  obtenerReservas(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/getAll`);
   }
-
-  obtenerReservas(): Observable<reservasI[]> {
-    return this.firestore.collection<reservasI>('reservas').valueChanges();
-  }
-
-  obtenerReservaPorId(id: string): Observable<reservasI> {
-    return this.firestore.collection('reservas').doc(id).valueChanges() as Observable<reservasI>;
-  }
-
-  actualizarReserva(id: string, reserva: reservasI) {
-    return this.firestore.collection('reservas').doc(id).update(reserva);
-  }
-
-  eliminarReserva(id: string) {
-    return this.firestore.collection('reservas').doc(id).delete();
-  }
-
   
+  obtenerReservaPorId(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get/${id}`);
+  }
+ 
+  actualizarReserva(id: string, reserva: reservasI): Observable<any> {
+    return this.http.put(`${this.baseUrl}/update/${id}`, reserva);
+  }
+
+  eliminarReserva(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete/${id}`);
+  }
 }

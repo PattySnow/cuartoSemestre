@@ -1,11 +1,12 @@
 export interface reservasI {
     id?: string;
-    ano: number;
-    fecha: string;
-    hora: string;
-    kilometraje: number;
+    patente: string;
     marca: string;
     modelo: string;
-    numeroPatente: string;
+    anio: number;
+    kilometraje: number;
+    fecha: string;
+    hora: string;
     uidUsuario: string;
+   
 }

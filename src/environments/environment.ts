@@ -1,5 +1,5 @@
 export const environment = {
-  production: false, // Puedes cambiar esto a true en producción
+  production: true, 
   firebase: {
     apiKey: "AIzaSyAU_RtaPS2UcgmWRSmXW1N2RaqH3pc09fc",
     authDomain: "tallermecanicoapp-27c7a.firebaseapp.com",
@@ -9,5 +9,7 @@ export const environment = {
     appId: "1:174491079965:web:4fbbc0e3e9f389fd42fdf4",
     measurementId: "G-GW6FNHPK25"
   },
-  google_maps_api_key: "AIzaSyDow6ZY2TWBPjp6fuM8WJRCFmuIwknywxM" // Aquí va tu clave de la API de Google Maps
+
+// KEY API GOOGLE MAPS
+  google_maps_api_key: "AIzaSyDow6ZY2TWBPjp6fuM8WJRCFmuIwknywxM" 
 };

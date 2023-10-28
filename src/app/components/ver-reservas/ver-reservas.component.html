@@ -1,36 +1,56 @@
-<div class="content">
-  <ion-list>
-    <ion-item-sliding *ngFor="let reserva of reservas">
-      <ion-item>
-        <ion-grid class="ion-text-center">
-          <ion-row>
-            <ion-col size="3">
-              <ion-label>Nro Patente</ion-label>
-              <p class="custom-text">{{ reserva.numeroPatente }}</p>
-            </ion-col>
-            <ion-col size="3">
-              <ion-label>Fecha</ion-label>
-              <p class="custom-text">{{ reserva.fecha }}</p>
-            </ion-col>
-            <ion-col size="3">
-              <ion-label>Hora</ion-label>
-              <p class="custom-text">{{ reserva.hora }}</p>
-            </ion-col>
-            <ion-col size="1">
-              <ion-button color="primary"  [routerLink]="['/modificar-reserva', reserva.id]">
-                <ion-icon name="create"></ion-icon>
-              </ion-button>
-            </ion-col>
-            <ion-col size="2">
-              <ion-button color="danger" (click)="reserva.id && deleteReserva(reserva.id)">
-                <ion-icon name="trash"  ></ion-icon>
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-    </ion-item-sliding>
-  </ion-list>
-</div>
-  
+<ion-list>
+  <ion-item-sliding *ngFor="let reserva of reservas">
+    <ion-item>
+      <ion-grid class="ion-text-center">
+        <ion-row>
+          <ion-col size="3">
+            <ion-label>Patente</ion-label>
+            <p class="custom-text">{{ reserva.patente }}</p>
+          </ion-col>
+          <ion-col size="3">
+            <ion-label>Fecha</ion-label>
+            <p class="custom-text">{{ reserva.fecha }}</p>
+          </ion-col>
+          <ion-col size="3">
+            <ion-label>Hora</ion-label>
+            <p class="custom-text">{{ reserva.hora }}</p>
+          </ion-col>
+          <ion-col size="1">
+            <ion-button color="primary" (click)="mostrarFormulario(reserva.id)" *ngIf="reserva.id">
 
+
+              <ion-icon name="create"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="1">
+            <ion-button color="danger" (click)="deleteReserva(reserva.id ? reserva.id : '')">
+
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-item-sliding>
+</ion-list>
+
+<ion-card *ngIf="editarReserva">
+  <ion-card-content>
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-input [(ngModel)]="reservaAEditar.fecha" name="fecha" type="date" [min]="minFecha"></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Hora</ion-label>
+      <ion-select [(ngModel)]="reservaAEditar.hora" name="hora">
+        <ion-select-option *ngFor="let hora of horasDisponibles" [value]="hora">{{ hora }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button color="primary" (click)="updateReserva()">Actualizar</ion-button>
+
+
+
+    <ion-button color="danger">Cancelar</ion-button>
+  </ion-card-content>
+</ion-card>

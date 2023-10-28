@@ -19,16 +19,17 @@ app.use(cors({ origin: true }));
 
 const db = admin.firestore();
 
-// ROUTES
-app.get('/', (req, res) => {
-    return res.status(200).send("Todo bien!!");
-});
 
-// POST
-
+// CREAR RESERVA (POST) 
 app.post("/api/create", (req, res) => {
     (async () => {
         try {
+            // Verifica si el usuario está autenticado y obtén su ID
+            const user = req.user; // Asumiendo que has configurado middleware para pasar la información del usuario en las solicitudes
+
+            if (!user) {
+                return res.status(401).send({ status: 'Failed', msg: 'Usuario no autenticado' });
+            }
 
             await db.collection('reservas').doc().create({
                 patente: req.body.patente,
@@ -37,19 +38,20 @@ app.post("/api/create", (req, res) => {
                 anio: req.body.anio,
                 kilometraje: req.body.kilometraje,
                 fecha: req.body.fecha,
-                hora: req.body.hora
+                hora: req.body.hora,
+                uidUsuario: user.uid
             });
 
-            return res.status(200).send({ status: 'Sucess', msg: 'reserva registrada' });
+            return res.status(200).send({ status: 'Success', msg: 'Reserva registrada' });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return res.status(500).send({ status: 'Failed', msg: error });
         }
     })();
 });
 
-// GET
-// SINGLE DOCUMENT BY ID
+
+// OBTENER RESERVA POR ID (GET)
 
 app.get('/api/get/:id', (req, res) => {
     (async () => {
@@ -58,7 +60,7 @@ app.get('/api/get/:id', (req, res) => {
             let reservas = await reqDoc.get();
             let response = reservas.data();
 
-            return res.status(200).send({ status: 'Sucess', data: response });
+            return res.status(200).send({ status: 'Success', data: response });
         } catch (error) {
             console.log(error)
             return res.status(500).send({ status: 'Failed', msg: error });
@@ -66,8 +68,7 @@ app.get('/api/get/:id', (req, res) => {
     })();
 });
 
-// ALL DOCUMENTS FROM COLLECTION
-
+// OBTENER TODAS LAS RESERVAS
 app.get('/api/getAll', (req, res) => {
     (async () => {
         try {
@@ -76,24 +77,23 @@ app.get('/api/getAll', (req, res) => {
 
             await query.get().then((data) => {
                 let docs = data.docs;
-
                 docs.map((doc) => {
                     const selectedItem= {
+                        id: doc.id, 
                         patente: doc.data().patente,
                         marca: doc.data().marca,
                         modelo: doc.data().modelo,
                         anio: doc.data().anio,
                         kilometraje: doc.data().kilometraje,
                         fecha: doc.data().fecha,
-                        hora: doc.data().hora
+                        hora: doc.data().hora,
+                        //uidUsuario: doc.data().uidUsuario
                     };
-
                    response.push(selectedItem); 
                 });
                 return response;
             });
-
-            return res.status(200).send({ status: 'Sucess', data: response });
+            return res.status(200).send({ status: 'Success', data: response });
         } catch (error) {
             console.log(error)
             return res.status(500).send({ status: 'Failed', msg: error });
@@ -102,7 +102,8 @@ app.get('/api/getAll', (req, res) => {
 });
 
 
-// UPDATE  (PUT)
+
+// ACTUALIZAR RESERVA  (PUT)
 app.put("/api/update/:id", (req, res) => {
     (async () => {
         try {
@@ -113,7 +114,7 @@ app.put("/api/update/:id", (req, res) => {
                 hora: req.body.hora
             });
 
-            return res.status(200).send({ status: 'Sucess', msg: 'reserva actualizada' });
+            return res.status(200).send({ status: 'Success', msg: 'reserva actualizada' });
         } catch (error) {
             console.log(error)
             return res.status(500).send({ status: 'Failed', msg: error });
@@ -128,7 +129,7 @@ app.delete("/api/delete/:id", (req, res) => {
             const reqDoc = db.collection('reservas').doc(req.params.id);
             await reqDoc.delete();
 
-            return res.status(200).send({ status: 'Sucess', msg: 'reserva cancelada' });
+            return res.status(200).send({ status: 'Success', msg: 'reserva cancelada' });
         } catch (error) {
             console.log(error)
             return res.status(500).send({ status: 'Failed', msg: error });

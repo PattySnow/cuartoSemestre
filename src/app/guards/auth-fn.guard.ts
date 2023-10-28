@@ -8,8 +8,8 @@ export const authGuardFn: CanActivateFn = () => {
   const authService = inject(AuthService);
   const routerService = inject(Router);
 
-  console.log ('Guard');
-  // Usamos el método `isAuthenticated` del servicio AuthService
+  console.log ('Se ha implementado el Guard exitosamente!!! :D');
+ 
   return authService.isAuthenticated().pipe(
     map((isAuthenticated) => {
       if (!isAuthenticated) {

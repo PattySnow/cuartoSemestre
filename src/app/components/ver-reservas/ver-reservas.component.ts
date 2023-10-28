@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { ApiService } from 'src/app/services/api.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
-import { FirestoreService } from 'src/app/services/firestore.service';
-import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth.service';
-
 
 @Component({
   selector: 'app-ver-reservas',
@@ -12,41 +11,66 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./ver-reservas.component.scss'],
 })
 export class VerReservasComponent implements OnInit {
+  reservaAEditar: reservasI = {
+    id: '',
+    patente: '',
+    marca: '',
+    modelo: '',
+    anio: 0,
+    kilometraje: 0,
+    fecha: '',
+    hora: '',
+    uidUsuario: '',
+  };
+
+  editarReserva: boolean = false;
   reservas: reservasI[] = [];
-  numeroPatente: string = ''; // Definir e inicializar estas variables
-  marca: string = '';
-  modelo: string = '';
-  ano: number = 0;
-  kilometraje: number = 0;
-  selectedDate: string = ''; // Asegúrate de que selectedDate sea una cadena
-  uid: string = ''; // Asigna el valor correcto a uid
   horasDisponibles: string[] = ['10:00 am', '12:00 pm', '02:00 pm', '04:00 pm'];
   horaSeleccionada: string = '';
+  selectedFecha: string = '';
+  minFecha: string = '';
 
   constructor(
-    private firestoreService: FirestoreService,
     public alertController: AlertController,
     private authService: AuthService,
-    private afs: AngularFirestore // Agrega AngularFirestore
+    private apiService: ApiService,
+    private firestore: AngularFirestore
   ) {}
 
   ngOnInit() {
-    // Obtener la lista de reservas al cargar el componente
-    this.firestoreService.getCollection<reservasI>('reservas').subscribe((reservas: reservasI[]) => {
-      this.reservas = reservas;
-      console.log('IDs de los documentos en la colección "reservas":');
-      reservas.forEach((reserva) => {
-        console.log(reserva.id); // Imprimir el ID de cada documento
-      });
-    });
-    // Obtener el UID del usuario actual
-    this.authService.getUid().subscribe((uid) => {
-      if (uid) {
-        this.uid = uid;
-        console.log('usuario id:', uid);
+    this.mostrarReservas();
+    this.setMinFecha();
+  }
+
+
+  mostrarReservas() {
+    this.apiService.obtenerReservas().subscribe((response) => {
+      if (response.status === "Success" && Array.isArray(response.data)) {
+        this.reservas = response.data;
+        console.log('Arreglo de reservas:', this.reservas);
+      } else {
+        console.error("La respuesta no es válida o no contiene datos.");
       }
     });
   }
+
+  mostrarFormulario(id: string) {
+    this.editarReserva = true;
+    // Agrega un console.log para verificar si se está obteniendo el ID de la reserva
+    console.log("ID de la reserva:", id);
+    // Obtén el ID de reserva al hacer clic en "Editar" y utilízalo para cargar los detalles de la reserva.
+    this.apiService.obtenerReservaPorId(id).subscribe((reserva) => {
+      this.reservaAEditar = {
+        id: id, // Asegúrate de incluir el ID en los datos de la reserva
+        ...reserva, // Copia todos los demás detalles de la reserva
+      };
+      // Agrega otro console.log para verificar la información de la reserva
+      console.log("Detalles de la reserva:", this.reservaAEditar);
+    });
+  }
+  
+  
+
   async deleteReserva(id: string) {
     const alert = await this.alertController.create({
       header: 'Confirmar Eliminación',
@@ -62,38 +86,62 @@ export class VerReservasComponent implements OnInit {
         {
           text: 'Eliminar',
           handler: () => {
-            // Llamamos a la función deleteDoc del servicio para eliminar el documento por su ID
-            this.firestoreService.deleteDoc('reservas', id).then(() => {
-              // El documento se eliminó exitosamente
-              console.log('Documento eliminado con éxito');
-            }).catch(error => {
-              // Hubo un error al eliminar el documento
-              console.error('Error al eliminar el documento:', error);
-            });
+            this.apiService.eliminarReserva(id).subscribe(
+              () => {
+                console.log('Reserva eliminada con éxito');
+                this.reservas = this.reservas.filter((reserva) => reserva.id !== id);
+              },
+              (error) => {
+                console.error('Error al eliminar la reserva:', error);
+              }
+            );
           }
         }
       ]
     });
-  
+
     await alert.present();
   }
 
-  async updateReserva(id: string) {
-    const updatedData = {
-      // Define los campos que deseas actualizar y sus nuevos valores
-      // Por ejemplo, si deseas actualizar la hora de la reserva:
-      hora: this.horaSeleccionada,
-      // Agrega otros campos a actualizar según tus necesidades
-    };
-
-    this.firestoreService.updateDoc(updatedData, 'reservas', id).then(() => {
-      // El documento se actualizó exitosamente
-      console.log('Documento actualizado con éxito');
-    }).catch(error => {
-      // Hubo un error al actualizar el documento
-      console.error('Error al actualizar el documento:', error);
-    });
+  updateReserva() {
+    if (this.reservaAEditar && this.reservaAEditar.id) {
+      this.apiService.actualizarReserva(this.reservaAEditar.id, this.reservaAEditar).subscribe(
+        (response) => {
+          if (response.status === "Success") {
+            console.log('Reserva actualizada con éxito.');
+            this.cancelarEdicion(); // Reinicia las propiedades para salir del modo de edición
+          } else {
+            console.error("Error al actualizar la reserva.");
+          }
+        },
+        (error) => {
+          console.error("Error al actualizar la reserva:", error);
+        }
+      );
+    }
   }
   
+  cancelarEdicion() {
+    this.editarReserva = false;
+    this.reservaAEditar = {
+      id: '',
+      patente: '',
+      marca: '',
+      modelo: '',
+      anio: 0,
+      kilometraje: 0,
+      fecha: '',
+      hora: '',
+      uidUsuario: '',
+    };
+  }
+
   
+  setMinFecha() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    this.minFecha = `${year}-${month}-${day}`;
+  }
 }

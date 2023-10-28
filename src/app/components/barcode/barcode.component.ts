@@ -8,10 +8,10 @@ import { AlertController } from '@ionic/angular'; // Agregar esta importación
   styleUrls: ['./barcode.component.scss'],
 })
 export class BarcodeComponent implements OnInit {
-  isSupported = false;
+  isSupported = false; // DESACTIVA EL BOTON DE ESCANEAR SI EL ESCANER NO ES SOPORTADO EN LA PLATAFORMA
   barcodes: Barcode[] = [];
 
-  constructor(private alertController: AlertController) {} // Agregar AlertController al constructor
+  constructor(private alertController: AlertController) {} 
 
   ngOnInit() {
     BarcodeScanner.isSupported().then((result) => {

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FirestoreService } from 'src/app/services/firestore.service'; // Asegúrate de importar el servicio FirestoreService
-import { reservasI } from 'src/app/interfaces/reservas.interface';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ApiService } from 'src/app/services/api.service';
+import { ReactiveFormsModule,FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-modificar-reserva',
@@ -13,17 +13,14 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['./modificar-reserva.component.scss'],
 })
 export class ModificarReservaComponent {
-  numeroPatente: string = '';
-  marca: string = '';
-  modelo: string = '';
-  ano: number = 0;
-  kilometraje: number = 0;
-  selectedDate: string = '';
-  horaSeleccionada: string = '';
+  id: string = '';
   currentDate: string = ''; // Agrega esta propiedad
   horasDisponibles: string[] = ['10:00 am', '12:00 pm', '02:00 pm', '04:00 pm']; // Agrega esta propiedad
-  reservas: reservasI[] = []; // Agrega esta propiedad
-  
+  nuevaReserva: any = {
+    fecha: '', // Inicializa fecha y hora en el formulario
+    hora: '',
+  };
+
   constructor(
     private firestore: AngularFirestore,
     private afAuth: AngularFireAuth,
@@ -33,7 +30,54 @@ export class ModificarReservaComponent {
   ) {
     this.currentDate = new Date().toISOString();
   }
+
+  editarForm = new FormGroup({
+    
+    fecha: new FormControl(''),
+    hora: new FormControl('')
+});
+
   ngOnInit() {
     
   }
+/*
+  async actualizarReserva(id: string) {
+    const actualizarReserva = {
+      hora: this.nuevaReserva.hora,
+      // Agrega otros campos a actualizar según tus necesidades
+    };
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar Actualización',
+      message: '¿Estás seguro de que deseas actualizar esta reserva?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            // El usuario canceló la actualización, no se hace nada
+          },
+        },
+        {
+          text: 'Actualizar',
+          handler: () => {
+            this.apiService.actualizarReserva(id, actualizarReserva).subscribe(
+              () => {
+                // La reserva se actualizó exitosamente
+                console.log('Reserva actualizada con éxito');
+                // Actualiza la lista de reservas o realiza otras acciones necesarias
+                // Vuelve a cargar la lista de reservas después de la actualización
+              },
+              (error) => {
+                // Hubo un error al actualizar la reserva
+                console.error('Error al actualizar la reserva:', error);
+              }
+            );
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }*/
 }

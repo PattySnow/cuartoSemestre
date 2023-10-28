@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
+import { AuthService } from 'src/app/services/auth.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-crear-reserva',
@@ -12,98 +9,42 @@ import { reservasI } from 'src/app/interfaces/reservas.interface';
   styleUrls: ['./crear-reserva.component.scss'],
 })
 export class CrearReservaComponent {
-  numeroPatente: string = '';
-  marca: string = '';
-  modelo: string = '';
-  ano: number = 0;
-  kilometraje: number = 0;
-  selectedDate: string = '';
+  constructor(private apiService: ApiService, private authService: AuthService) {}
+
+  nuevaReserva: reservasI = {
+    patente: '',
+    marca: '',
+    modelo: '',
+    anio: 0,
+    kilometraje: 0,
+    fecha: '',
+    hora: '',
+    uidUsuario: '',
+  };
+
+  horasDisponibles: string[] = ['08:00', '09:00', '10:00', '11:00', '12:00'];
   horaSeleccionada: string = '';
-  currentDate: string = ''; // Agrega esta propiedad
-  horasDisponibles: string[] = ['10:00 am', '12:00 pm', '02:00 pm', '04:00 pm']; // Agrega esta propiedad
-  reservas: reservasI[] = []; // Agrega esta propiedad
-  
-  constructor(
-    private firestore: AngularFirestore,
-    private afAuth: AngularFireAuth,
-    private alertController: AlertController,
-    private router: Router,
-    private apiService: ApiService
-  ) {
-    this.currentDate = new Date().toISOString();
-  }
+  currentDate: Date = new Date();
 
-
-  async reservar() {
-    try {
-      const user = await this.afAuth.currentUser;
-
-      if (user) {
-        const uid = user.uid;
-
-        // Crear una nueva reserva
-        const nuevaReserva: reservasI = {
-          numeroPatente: this.numeroPatente,
-          marca: this.marca,
-          modelo: this.modelo,
-          ano: this.ano,
-          kilometraje: this.kilometraje,
-          fecha: this.selectedDate,
-          hora: this.horaSeleccionada,
-          uidUsuario: uid,
-        };
-
-        // Llamar al servicio para crear la reserva en Firestore
-        this.apiService.crearReserva(nuevaReserva).then((docRef) => {
-          const nuevoId = docRef.id;
-          console.log('Nuevo ID del documento creado en Firestore:', nuevoId);
-
-          // Recargar la lista de reservas después de crear una nueva
-          this.apiService.obtenerReservas().subscribe((reservas: reservasI[]) => {
-            // Actualizar la lista de reservas
-            this.apiService.reservas = reservas;
-          });
-
-          // Mostrar una alerta de reserva exitosa
-          this.mostrarAlerta('Reserva Exitosa', 'Su reserva se ha registrado con éxito.');
-
-          // Limpiar los campos del formulario
-          this.limpiarCampos();
-        }).catch((error) => {
-          console.error('Error al crear reserva: ', error);
-        });
+  onSubmit() {
+    this.authService.isAuthenticated().subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        this.crearReserva();
       } else {
-        console.error('Usuario no autenticado. Inicie sesión para hacer una reserva.');
+        // El usuario no está autenticado, puedes mostrar un mensaje de error o redirigirlo a la página de inicio de sesión.
       }
-    } catch (error) {
-      console.error('Error al hacer la reserva:', error);
-    }
-  }
-
-  async limpiarCampos() {
-    this.numeroPatente = '';
-    this.marca = '';
-    this.modelo = '';
-    this.ano = 0;
-    this.kilometraje = 0;
-    this.selectedDate = '';
-    this.horaSeleccionada = '';
-  }
-
-  async mostrarAlerta(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header: header,
-      message: message,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.router.navigate(['/home']);
-          },
-        },
-      ],
     });
+  }
 
-    await alert.present();
+  crearReserva() {
+    this.nuevaReserva.hora = this.horaSeleccionada;
+    this.apiService.crearReserva(this.nuevaReserva).subscribe(
+      (response) => {
+        console.log('Reserva creada con éxito', response);
+      },
+      (error) => {
+        console.error('Error al crear reserva', error);
+      }
+    );
   }
 }

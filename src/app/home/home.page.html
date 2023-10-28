@@ -8,10 +8,8 @@
       </div>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Nuestros Servicios</button>
-        <button mat-menu-item>Nosotros</button>
-        <button mat-menu-item [routerLink]="['/home/mis-reservas']" >Ver Reservas</button>
-        <button mat-menu-item [routerLink]="['/home/reservar-servicio']">Reservar hora</button>
+        <button mat-menu-item [routerLink]="['/home']">Inicio</button>
+        <button mat-menu-item [routerLink]="['/reservas']" >Mis Reservas</button>
         <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
         <div class="centered-image">
           <img src="assets/imagenes/logo.jpg" alt="Logo" class="logo-menu">
@@ -51,7 +49,35 @@
 
   <!-- Muestra el componente <app-mis-reservas> si no está en la vista "Pagar" -->
     <div *ngIf="segment === 'default'">
-      <router-outlet></router-outlet>
+  
+  
+        <ion-title class="titulo">Nuestros Servicios</ion-title>
+      
+        <div class="centered-card">
+          <mat-card class="servicios-card">
+            <mat-card-header class="centered-header">
+              <img mat-card-image src="assets/imagenes/frenos.jpg" alt="">
+            </mat-card-header>
+          
+            <mat-card-content class="centered-content">
+              <mat-card-title class="centered-title">Frenos</mat-card-title>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      
+        <div class="centered-card">
+          <mat-card class="servicios-card">
+            <mat-card-header class="centered-header">
+              <img mat-card-image src="assets/imagenes/aceite.jpg" alt="">
+            </mat-card-header>
+          
+            <mat-card-content class="centered-content">
+              <mat-card-title class="centered-title">Aceite</mat-card-title>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      
+     
     </div>
     
 

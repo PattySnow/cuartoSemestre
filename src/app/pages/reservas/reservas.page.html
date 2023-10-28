@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="colorAzul">
+    <div class="header-content">
+      <div class="centered-button">
+        <button mat-button [matMenuTriggerFor]="menu">
+          <mat-icon style="color: white;">menu</mat-icon>
+        </button>
+      </div>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [routerLink]="['/home']">Inicio</button>
+        <button mat-menu-item [routerLink]="['/reservas']" >Mis Reservas</button>
+        <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
+        <div class="centered-image">
+          <img src="assets/imagenes/logo.jpg" alt="Logo" class="logo-menu">
+        </div>
+      </mat-menu>
+           
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-text-center">
+  <ion-button expand="full" [routerLink]="['/reservas/mis-reservas']" class="ion-margin">Ver Reservas</ion-button>
+  <ion-button expand="full" [routerLink]="['/reservas/reservar-servicio']" class="ion-margin">Reservar</ion-button>
+  <!--AQUI SE MUESTRAN LOS CHILDREN-->
+  <router-outlet></router-outlet>
+  
+
+ 
+</ion-content>
+
