@@ -1,39 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
-import { AlertController } from '@ionic/angular'; // Agregar esta importación
+import { Component } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { NgxScannerQrcodeComponent } from 'ngx-scanner-qrcode';
 
 @Component({
   selector: 'app-barcode',
   templateUrl: './barcode.component.html',
   styleUrls: ['./barcode.component.scss'],
 })
-export class BarcodeComponent implements OnInit {
-  isSupported = false; // DESACTIVA EL BOTON DE ESCANEAR SI EL ESCANER NO ES SOPORTADO EN LA PLATAFORMA
-  barcodes: Barcode[] = [];
-
-  constructor(private alertController: AlertController) {} 
-
-  ngOnInit() {
-    BarcodeScanner.isSupported().then((result) => {
-      this.isSupported = result.supported;
-    });
-  }
+export class BarcodeComponent {
+  constructor(private alertController: AlertController) {}
 
   async scan(): Promise<void> {
     console.log('Ejecutando escáner de código de barras...');
-    const granted = await this.requestPermissions();
-    if (!granted) {
-      this.presentAlert();
-      return;
-    }
-    console.log('Ejecutando scanner...');
-    const { barcodes } = await BarcodeScanner.scan();
-    this.barcodes.push(...barcodes);
-  }
+    // Puedes agregar la lógica de permisos aquí si es necesario para ngx-scanner-qrcode.
+    // No se necesitan permisos especiales para ngx-scanner-qrcode en la mayoría de los casos.
 
-  async requestPermissions(): Promise<boolean> {
-    const { camera } = await BarcodeScanner.requestPermissions();
-    return camera === 'granted' || camera === 'limited';
+    // Lógica para iniciar/parar el escaneo (ya se maneja en el HTML).
   }
 
   async presentAlert(): Promise<void> {
@@ -44,4 +26,4 @@ export class BarcodeComponent implements OnInit {
     });
     await alert.present();
   }
-}
+}  

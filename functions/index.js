@@ -4,128 +4,152 @@ const admin = require("firebase-admin");
 var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://tallermecanicoapp-27c7a.firebaseio.com"
 });
 
 const express = require("express");
 const cors = require("cors");
 
-// APP
-
 const app = express();
 app.use(cors({ origin: true }));
 
-// DATABASE REFERENCE
-
 const db = admin.firestore();
+const realTimeDb = admin.database();
 
-// CREAR RESERVA (POST) 
+// CREAR RESERVA (POST)
 app.post("/api/create", (req, res) => {
-    (async () => {
-        try {
-            await db.collection('reservas').doc().create({
-                patente: req.body.patente,
-                marca: req.body.marca,
-                modelo: req.body.modelo,
-                anio: req.body.anio,
-                kilometraje: req.body.kilometraje,
-                fecha: req.body.fecha,
-                hora: req.body.hora
-            });
+  (async () => {
+    try {
+      // Firestore
+      const firestoreReservaRef = await db.collection('reservas').add({
+        patente: req.body.patente,
+        marca: req.body.marca,
+        modelo: req.body.modelo,
+        anio: req.body.anio,
+        kilometraje: req.body.kilometraje,
+        fecha: req.body.fecha,
+        hora: req.body.hora
+      });
 
-            return res.status(200).send({ status: 'Success', msg: 'Reserva registrada' });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({ status: 'Failed', msg: error });
-        }
-    })();
+      // Realtime Database
+      const realtimeDbReservaRef = realTimeDb.ref('reservas').push({
+        patente: req.body.patente,
+        marca: req.body.marca,
+        modelo: req.body.modelo,
+        anio: req.body.anio,
+        kilometraje: req.body.kilometraje,
+        fecha: req.body.fecha,
+        hora: req.body.hora
+      });
+
+      return res.status(200).send({
+        status: 'Success',
+        msg: 'Reserva registrada',
+        firestoreReservaId: firestoreReservaRef.id,
+        realtimeDbReservaKey: realtimeDbReservaRef.key
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ status: 'Failed', msg: error });
+    }
+  })();
 });
 
 // OBTENER RESERVA POR ID (GET)
+app.get('/api/get/:id', async (req, res) => {
+  try {
+    const doc = await db.collection('reservas').doc(req.params.id).get();
+    if (!doc.exists) {
+      return res.status(404).send({ status: 'Failed', msg: 'Reserva no encontrada' });
+    }
 
-app.get('/api/get/:id', (req, res) => {
-    (async () => {
-        try {
-            const reqDoc = db.collection('reservas').doc(req.params.id);
-            let reservas = await reqDoc.get();
-            let response = reservas.data();
+    const reserva = {
+      id: doc.id,
+      ...doc.data()
+    };
 
-            return res.status(200).send({ status: 'Success', data: response });
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ status: 'Failed', msg: error });
-        }
-    })();
+    return res.status(200).send({ status: 'Success', data: reserva });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'Failed', msg: error });
+  }
 });
 
-// OBTENER TODAS LAS RESERVAS
-app.get('/api/getAll', (req, res) => {
-    (async () => {
-        try {
-            const query = db.collection('reservas');
-            let response = [];
-
-            await query.get().then((data) => {
-                let docs = data.docs;
-                docs.map((doc) => {
-                    const selectedItem= {
-                        id: doc.id, 
-                        patente: doc.data().patente,
-                        marca: doc.data().marca,
-                        modelo: doc.data().modelo,
-                        anio: doc.data().anio,
-                        kilometraje: doc.data().kilometraje,
-                        fecha: doc.data().fecha,
-                        hora: doc.data().hora,
-                        //uidUsuario: doc.data().uidUsuario
-                    };
-                   response.push(selectedItem); 
-                });
-                return response;
-            });
-            return res.status(200).send({ status: 'Success', data: response });
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ status: 'Failed', msg: error });
-        }
-    })();
+// OBTENER TODAS LAS RESERVAS (Firestore)
+app.get('/api/getAllFirestore', async (req, res) => {
+  try {
+    const querySnapshot = await db.collection('reservas').get();
+    const reservas = [];
+    querySnapshot.forEach((doc) => {
+      reservas.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    return res.status(200).send({ status: 'Success', data: reservas });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'Failed', msg: error });
+  }
 });
 
-
+// OBTENER TODAS LAS RESERVAS (Realtime Database)
+app.get('/api/getAllRealtimeDb', (req, res) => {
+  const reservasRef = realTimeDb.ref('reservas');
+  reservasRef.once(
+    'value',
+    (snapshot) => {
+      const reservas = snapshot.val();
+      return res.status(200).send({ status: 'Success', data: reservas });
+    },
+    (errorObject) => {
+      console.error('Error al obtener reservas en tiempo real: ', errorObject);
+      return res
+        .status(500)
+        .send({ status: 'Failed', msg: 'Error al obtener reservas en tiempo real.' });
+    }
+  );
+});
 
 // ACTUALIZAR RESERVA  (PUT)
-app.put("/api/update/:id", (req, res) => {
-    (async () => {
-        try {
-            const reqDoc = db.collection('reservas').doc(req.params.id);
-            await reqDoc.update({
-              
-                fecha: req.body.fecha,
-                hora: req.body.hora
-            });
+app.put("/api/update/:id", async (req, res) => {
+  try {
+    const reservaRef = db.collection('reservas').doc(req.params.id);
+    const updateData = {
+      fecha: req.body.fecha,
+      hora: req.body.hora
+    };
 
-            return res.status(200).send({ status: 'Success', msg: 'reserva actualizada' });
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ status: 'Failed', msg: error });
-        }
-    })();
+    // Actualizar en Firestore
+    await reservaRef.update(updateData);
+
+    // Actualizar en Realtime Database
+    await realTimeDb.ref(`reservas/${req.params.id}`).update(updateData);
+
+    return res.status(200).send({ status: 'Success', msg: 'Reserva actualizada' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'Failed', msg: error });
+  }
 });
 
 // DELETE 
-app.delete("/api/delete/:id", (req, res) => {
-    (async () => {
-        try {
-            const reqDoc = db.collection('reservas').doc(req.params.id);
-            await reqDoc.delete();
+app.delete("/api/delete/:id", async (req, res) => {
+  try {
+    const reservaRef = db.collection('reservas').doc(req.params.id);
 
-            return res.status(200).send({ status: 'Success', msg: 'reserva cancelada' });
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ status: 'Failed', msg: error });
-        }
-    })();
+    // Eliminar en Firestore
+    await reservaRef.delete();
+
+    // Eliminar en Realtime Database
+    await realTimeDb.ref(`reservas/${req.params.id}`).remove();
+
+    return res.status(200).send({ status: 'Success', msg: 'Reserva cancelada' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ status: 'Failed', msg: error });
+  }
 });
-
 
 exports.app = functions.https.onRequest(app);

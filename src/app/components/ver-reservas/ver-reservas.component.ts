@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
-import { AuthService } from 'src/app/services/auth.service';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
 import { Router } from '@angular/router';
+import { format, utcToZonedTime } from 'date-fns-tz';
+import { parse } from 'date-fns/esm';
 
 @Component({
   selector: 'app-ver-reservas',
@@ -33,10 +33,8 @@ export class VerReservasComponent implements OnInit {
 
   constructor(
     public alertController: AlertController,
-    private authService: AuthService,
     private apiService: ApiService,
-    private firestore: AngularFirestore,
-    private router: Router, 
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -44,34 +42,35 @@ export class VerReservasComponent implements OnInit {
     this.setMinFecha();
   }
 
-
   mostrarReservas() {
-    this.apiService.obtenerReservas().subscribe((response) => {
-      if (response.status === "Success" && Array.isArray(response.data)) {
-        this.reservas = response.data;
-        console.log('Arreglo de reservas:', this.reservas);
-      } else {
-        console.error("La respuesta no es válida o no contiene datos.");
+    this.apiService.obtenerReservasRealtimeDb().subscribe(
+      (response: any) => {
+        if (response) {
+          // Asigna las fechas directamente al arreglo de reservas
+          this.reservas = Object.keys(response).map((key) => ({ id: key, ...response[key] }));
+          
+          console.log('Arreglo de reservas Realtime Database:', this.reservas);
+        } else {
+          console.error("La respuesta no es válida o no contiene datos.");
+        }
+      },
+      (error) => {
+        console.error("Error al obtener reservas de Realtime Database:", error);
       }
-    });
+    );
   }
+  
+  
 
   mostrarFormulario(id: string) {
     this.editarReserva = true;
-    // Agrega un console.log para verificar si se está obteniendo el ID de la reserva
-    console.log("ID de la reserva:", id);
-    // Obtén el ID de reserva al hacer clic en "Editar" y utilízalo para cargar los detalles de la reserva.
-    this.apiService.obtenerReservaPorId(id).subscribe((reserva) => {
+    this.apiService.obtenerReservaPorIdRealtimeDb(id).subscribe((reserva) => {
       this.reservaAEditar = {
-        id: id, // Asegúrate de incluir el ID en los datos de la reserva
-        ...reserva, // Copia todos los demás detalles de la reserva
+        id: id,
+        ...reserva,
       };
-      // Agrega otro console.log para verificar la información de la reserva
-      console.log("Detalles de la reserva:", this.reservaAEditar);
     });
   }
-  
-  
 
   async deleteReserva(id: string) {
     const alert = await this.alertController.create({
@@ -88,13 +87,13 @@ export class VerReservasComponent implements OnInit {
         {
           text: 'Eliminar',
           handler: () => {
-            this.apiService.eliminarReserva(id).subscribe(
+            this.apiService.eliminarReservaRealtimeDb(id).subscribe(
               () => {
-                console.log('Reserva eliminada con éxito');
+                console.log('Reserva eliminada con éxito de Realtime Database');
                 this.reservas = this.reservas.filter((reserva) => reserva.id !== id);
               },
               (error) => {
-                console.error('Error al eliminar la reserva:', error);
+                console.error('Error al eliminar la reserva de Realtime Database:', error);
               }
             );
           }
@@ -107,29 +106,25 @@ export class VerReservasComponent implements OnInit {
 
   updateReserva() {
     if (this.reservaAEditar && this.reservaAEditar.id) {
-      this.apiService.actualizarReserva(this.reservaAEditar.id, this.reservaAEditar).subscribe(
-        (response) => {
-          if (response.status === "Success") {
-            console.log('Reserva actualizada con éxito.');
-            this.cancelarEdicion(); // Reinicia las propiedades para salir del modo de edición
-  
-            // Redirige al usuario a la página de "mis-reservas" después de una actualización exitosa
+      this.apiService.actualizarReservaRealtimeDb(this.reservaAEditar.id, this.reservaAEditar).subscribe(
+        (response: any) => {
+          console.log('Respuesta de actualización de reserva:', response);
+          if (response) {
+            console.log('Reserva actualizada con éxito en Realtime Database.');
+            this.mostrarReservas();  // Llama a mostrarReservas después de la actualización exitosa
+            this.cancelarEdicion();
             this.router.navigate(['/reservas/mis-reservas']);
-  
-          
           } else {
-            console.error("Error al actualizar la reserva.");
+            console.error("Error al actualizar la reserva en Realtime Database. Respuesta vacía.");
           }
         },
         (error) => {
-          console.error("Error al actualizar la reserva:", error);
+          console.error("Error al actualizar la reserva en Realtime Database:", error);
         }
       );
     }
   }
-  
 
-  
   cancelarEdicion() {
     this.editarReserva = false;
     this.reservaAEditar = {
@@ -145,7 +140,6 @@ export class VerReservasComponent implements OnInit {
     };
   }
 
-  
   setMinFecha() {
     const today = new Date();
     const year = today.getFullYear();
@@ -153,4 +147,8 @@ export class VerReservasComponent implements OnInit {
     const day = today.getDate().toString().padStart(2, '0');
     this.minFecha = `${year}-${month}-${day}`;
   }
+
+
+  
+  
 }
