@@ -8,9 +8,14 @@
       </div>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item [routerLink]="['/home']">Inicio</button>
-        <button mat-menu-item [routerLink]="['/reservas']" >Mis Reservas</button>
-        <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
+        <ng-container *ngFor="let item of menuItems">
+          <button mat-menu-item *ngIf="item.link" [routerLink]="[item.link]">
+            {{ item.label }}
+          </button>
+          <button mat-menu-item *ngIf="item.action" (click)="item.action()">
+            {{ item.label }}
+          </button>
+        </ng-container>
         <div class="centered-image">
           <img src="assets/imagenes/logo.jpg" alt="Logo" class="logo-menu">
         </div>
@@ -25,14 +30,9 @@
   </ion-toolbar>
 </ion-header>
 
-
-
-
-
-
 <ion-content class="centered-content">
-  <div>
-    <ion-segment [(ngModel)]="segment" (ionChange)="toggleBarcodeVisibility()">
+  <ng-container *ngIf="!showBarcode"> <!-- Muestra el contenido solo si showBarcode es falso (no es administrador) -->
+    <ion-segment [(ngModel)]="segment" (ionChange)="Segmentos()">
       <ion-segment-button value="default">
         <ion-label>Inicio</ion-label>
       </ion-segment-button>
@@ -43,15 +43,11 @@
         <ion-label>Pagar</ion-label>
       </ion-segment-button>
     </ion-segment>
-    
-  </div>
-
-
-  <!-- Muestra el componente <app-mis-reservas> si no está en la vista "Pagar" -->
-    <div *ngIf="segment === 'default'">
+  </ng-container>
   
-  
-        <ion-title class="titulo">Nuestros Servicios</ion-title>
+
+  <div *ngIf="segment === 'default'">
+    <ion-title class="titulo">Nuestros Servicios</ion-title>
       
         <div class="centered-card">
           <mat-card class="servicios-card">

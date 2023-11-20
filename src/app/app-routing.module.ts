@@ -3,8 +3,8 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { authGuardFn } from 'src/app/guards/auth-fn.guard';
 import { VerReservasComponent } from './components/ver-reservas/ver-reservas.component';
 import { CrearReservaComponent } from './components/crear-reserva/crear-reserva.component';
-import { ModificarReservaComponent } from './components/modificar-reserva/modificar-reserva.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
+import { RegistrarEmpleadoComponent } from './components/registrar-empleado/registrar-empleado.component';
 
 
 
@@ -17,8 +17,6 @@ const routes: Routes = [
     
   },
   
-
-
 
   {
     path: 'splash',
@@ -54,11 +52,7 @@ const routes: Routes = [
 
   },
 
-  {
-    path: 'modificar-reserva/:id',
-    component: ModificarReservaComponent
-  },
-
+  
   {
     path: 'mis-reservas',
     component: VerReservasComponent,
@@ -68,6 +62,20 @@ const routes: Routes = [
   {
     path: 'reservas',
     loadChildren: () => import('./pages/reservas/reservas.module').then( m => m.ReservasPageModule)
+  },
+
+ 
+
+  {
+    path: 'registrar-empleado',
+    component: RegistrarEmpleadoComponent,
+
+  },
+
+
+  {
+    path: 'empleados',
+    loadChildren: () => import('./pages/empleados/empleados.module').then( m => m.EmpleadosPageModule)
   },
 
   {
@@ -80,12 +88,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   
-
-
-
-
-
-
 
 
 

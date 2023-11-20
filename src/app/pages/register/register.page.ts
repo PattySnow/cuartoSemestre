@@ -3,6 +3,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
+import { clientesI } from 'src/app/interfaces/clientes.interface';
+
 
 @Component({
   selector: 'app-register',
@@ -10,13 +12,14 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['register.page.scss'],
 })
 export class RegisterPage {
-  userData = {
+  userData: clientesI = {
     email: '',
     password: '',
     nombre: '',
     apellido: '',
     telefono: '',
     rut: '',
+    uidUsuario: '',
   };
 
   constructor(
@@ -34,15 +37,13 @@ export class RegisterPage {
       );
 
       if (userCredential.user) {
-        const userId = userCredential.user.uid;
+        const uidUsuario = userCredential.user.uid;
 
-        await this.firestore.collection('clientes').doc(userId).set({
-          nombre: this.userData.nombre,
-          apellido: this.userData.apellido,
-          telefono: this.userData.telefono,
-          rut: this.userData.rut,
-          userId: userId,
-        });
+        // Utiliza la interfaz clientesI para definir los datos a guardar en Firestore
+        const { password, ...clienteDataSinPassword } = this.userData;
+
+        // Guarda los datos del cliente en Firestore sin incluir la contraseña
+        await this.firestore.collection('clientes').doc(uidUsuario).set(clienteDataSinPassword);
 
         // Muestra el mensaje emergente de agradecimiento
         this.showRegistrationAlert();

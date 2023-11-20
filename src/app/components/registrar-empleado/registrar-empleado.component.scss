@@ -1,0 +1,28 @@
+/* Estilos para las etiquetas flotantes */
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  label {
+    position: absolute;
+    pointer-events: none;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+  }
+  
+  input:focus + label,
+  input:not(:placeholder-shown) + label {
+    font-size: 0.75em;
+    transform: translateY(-100%) scale(0.9);
+    color: #333; /* Cambia el color del texto al escribir */
+  }
+  
+  label.active {
+    font-size: 0.75em;
+    transform: translateY(-100%) scale(0.9);
+    color: #333; /* Cambia el color del texto al escribir */
+  }
+  

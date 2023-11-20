@@ -8,8 +8,8 @@ import { AuthService } from 'src/app/services/auth.service';
   providedIn: 'root',
 })
 export class ApiService {
-  private firestoreUrl = 'https://us-central1-tallermecanicoapp-27c7a.cloudfunctions.net/app/api'; // URL de Firestore (mantenida para operaciones específicas de Firestore)
-  private realtimeDbUrl = 'https://tallermecanicoapp-27c7a-default-rtdb.firebaseio.com'; // URL de Realtime Database
+  private firestoreUrl = 'https://us-central1-tallermecanicoapp-27c7a.cloudfunctions.net/app/api'; 
+  private realtimeDbUrl = 'https://tallermecanicoapp-27c7a-default-rtdb.firebaseio.com'; 
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

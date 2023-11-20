@@ -9,7 +9,8 @@ admin.initializeApp({
 });
 
 const express = require("express");
-const cors = require("cors");
+const cors = require('cors')
+
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -150,6 +151,11 @@ app.delete("/api/delete/:id", async (req, res) => {
     console.error(error);
     return res.status(500).send({ status: 'Failed', msg: error });
   }
+
+
+  
 });
+
+
 
 exports.app = functions.https.onRequest(app);

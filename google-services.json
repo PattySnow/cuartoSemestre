@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "174491079965",
+    "firebase_url": "https://tallermecanicoapp-27c7a-default-rtdb.firebaseio.com",
+    "project_id": "tallermecanicoapp-27c7a",
+    "storage_bucket": "tallermecanicoapp-27c7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174491079965:android:ca78aa34b3c9ed0142fdf4",
+        "android_client_info": {
+          "package_name": "com.serviexpress.tallermecanico"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPAPyVidWefTjiADg2uq0Vpgex1pt9keo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

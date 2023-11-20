@@ -3,8 +3,6 @@ import { AlertController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 import { reservasI } from 'src/app/interfaces/reservas.interface';
 import { Router } from '@angular/router';
-import { format, utcToZonedTime } from 'date-fns-tz';
-import { parse } from 'date-fns/esm';
 
 @Component({
   selector: 'app-ver-reservas',
