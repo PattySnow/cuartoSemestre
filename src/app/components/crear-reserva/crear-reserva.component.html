@@ -23,7 +23,7 @@
     </div>
     <div>
       <label for="selectedDate">Fecha</label>
-      <input type="date" [(ngModel)]="nuevaReserva.fecha" name="selectedDate" [min]="currentDate | date: 'yyyy-MM-dd'" required>
+      <input type="date" [(ngModel)]="nuevaReserva.fecha" name="selectedDate" [min]="currentDate | date: 'dd-mm-yyyy'" required>
     </div>
     <div>
       <label for="selectedHora">Hora</label>

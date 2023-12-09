@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 @Component({
   selector: 'app-home',
@@ -10,118 +10,95 @@ import { AuthService } from '../services/auth.service';
 })
 export class HomePage implements OnInit {
   userName: string = '';
-  menuItems: { label: string; link?: string; action?: () => void }[] = [];
-  segment: string = 'default';
+  userType: string = '';
   showBarcode: boolean = false;
   showContacto: boolean = false;
+  segment: string = 'default';
 
   constructor(
-    private rutaActiva: ActivatedRoute,
-    private firestore: AngularFirestore,
     private authService: AuthService,
+    private db: AngularFireDatabase,
     private router: Router
   ) {}
-
-  Segmentos() {
-    const isAdmin = this.menuItems.some(item => item.label === 'Proveedores');
-    
-    if (isAdmin) {
-      // Si es administrador, ocultar todos los segmentos
-      this.showBarcode = false;
-      this.showContacto = this.segment === 'contacto';
-    } else {
-      // Si es cliente, muestra los segmentos correspondientes
-      this.showBarcode = this.segment === 'pagar';
-      this.showContacto = this.segment === 'contacto';
-    }
-  }
-  
 
   ngOnInit() {
     this.authService.user.subscribe((user) => {
       if (user) {
-        this.getNombreCliente(user.uid)
-          .then((foundInClientes: boolean) => {
-            if (!foundInClientes) {
-              this.getNombreAdmin(user.uid);
+        const userUid = user.uid;
+
+        this.getUserInfo(userUid)
+          .then((userInfo: any) => {
+            if (userInfo) {
+              this.userName = `Bienvenid@ ${userInfo.nombre}`;
+              this.userType = userInfo.tipo;
+              this.segmentLogic();
+            } else {
+              console.log('Usuario no encontrado');
             }
-            this.Segmentos(); // Llamar a la función después de obtener las opciones del menú
           })
           .catch((error: any) => {
-            console.error('Error al buscar en clientes:', error);
+            console.error('Error al obtener la información del usuario:', error);
           });
+      } else {
+        console.log('No se encontró un usuario autenticado');
       }
     });
   }
 
-  mostrarOpcionesAdministrador() {
-    // Opciones para un usuario administrador
-    this.menuItems = [
-      { label: 'Inicio', link: '/home' },
-      { label: 'Empleados', link: '/empleados' },
-      { label: 'Clientes', link: '/clientes' },
-      { label: 'Proveedores', link: '/proveedores' },
-      { label: 'Servicios', link: '/servicios' },
-      { label: 'Cerrar Sesión', action: this.logout.bind(this) },
-    ];
-  }
-
-  mostrarOpcionesCliente() {
-    // Opciones para clientes
-    this.menuItems = [
-      { label: 'Inicio', link: '/home' },
-      { label: 'Mis Reservas', link: '/reservas' },
-      { label: 'Cerrar Sesión', action: this.logout.bind(this) },
-    ];
-  }
-
-  async getNombreCliente(usuarioId: string): Promise<boolean> {
-    const clientesRef = this.firestore.collection('clientes').doc(usuarioId).ref;
-    try {
-      const userData = await clientesRef.get();
-      if (userData.exists) {
-        const data = userData.data() as any;
-        if (data && data.nombre) {
-          this.userName = data.nombre;
-          this.mostrarOpcionesCliente(); // Establece las opciones para clientes
-          console.log('Nombre del usuario (clientes):', this.userName);
-          return true;
+  getUserInfo(uidUsuario: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('Buscando en clientes...');
+      const clientesRef = this.db.object(`/clientes/${uidUsuario}`).valueChanges();
+  
+      clientesRef.subscribe((cliente: any) => {
+        console.log('Cliente:', cliente);
+        if (cliente && cliente.uidUsuario === uidUsuario) {
+          resolve({ nombre: cliente.nombre, tipo: 'cliente' });
+        } else {
+          console.log('No se encontró en clientes. Buscando en empleados...');
+          const empleadosRef = this.db.object(`/empleados/${uidUsuario}`).valueChanges();
+  
+          empleadosRef.subscribe((empleado: any) => {
+            console.log('Empleado:', empleado);
+            if (empleado && empleado.uidUsuario === uidUsuario) {
+              resolve({ nombre: empleado.nombre, tipo: 'empleado' });
+            } else {
+              console.log('No se encontró en empleados. Buscando en administrador...');
+              const adminRef = this.db.object(`/administrador/${uidUsuario}`).valueChanges();
+  
+              adminRef.subscribe((admin: any) => {
+                console.log('Admin:', admin);
+                if (admin && admin.uidUsuario === uidUsuario) {
+                  resolve({ nombre: 'Admin', tipo: 'admin' });
+                } else {
+                  console.log('No se encontró en administrador.');
+                  resolve(null); // No se encontró en ninguna colección
+                }
+              });
+            }
+          });
         }
-      }
-      console.log('No se encontró el nombre del usuario en clientes.');
-      return false;
-    } catch (error) {
-      console.error('Error al obtener datos de clientes:', error);
-      throw error;
+      }, (error: any) => {
+        console.error('Error:', error);
+        reject(error); // Manejo de errores en caso de problemas de acceso a la base de datos
+      });
+    });
+  }
+  
+  
+
+  segmentLogic() {
+    if (this.userType === 'admin') {
+      this.showBarcode = false;
+      this.showContacto = this.segment === 'contacto';
+    } else {
+      this.showBarcode = this.segment === 'pagar';
+      this.showContacto = this.segment === 'contacto';
     }
   }
-  
-  async getNombreAdmin(usuarioId: string): Promise<boolean> {
-    const adminRef = this.firestore.collection('administrador').doc(usuarioId).ref;
-    try {
-      const userData = await adminRef.get();
-      if (userData.exists) {
-        const data = userData.data() as any;
-        if (data && data.nombre) {
-          this.userName = data.nombre;
-          this.mostrarOpcionesAdministrador(); // Establece las opciones para administrador
-          console.log('Nombre del usuario (administrador):', this.userName);
-          return true;
-        }
-      }
-      console.log('No se encontró el nombre del usuario en administrador.');
-      return false;
-    } catch (error) {
-      console.error('Error al obtener datos de administrador:', error);
-      throw error;
-    }
-  }
-  
-  
 
   logout() {
-    this.authService
-      .logout()
+    this.authService.logout()
       .then(() => {
         console.log('Cierre de sesión exitoso');
         this.router.navigate(['/login']);
@@ -129,12 +106,5 @@ export class HomePage implements OnInit {
       .catch((error) => {
         console.error('Error al cerrar sesión:', error);
       });
-  }
-
-  initCap(str: string): string {
-    if (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    }
-    return '';
   }
 }

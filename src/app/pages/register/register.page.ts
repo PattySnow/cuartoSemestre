@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { AlertController } from '@ionic/angular';
 import { clientesI } from 'src/app/interfaces/clientes.interface';
-
 
 @Component({
   selector: 'app-register',
@@ -25,7 +24,7 @@ export class RegisterPage {
   constructor(
     private afAuth: AngularFireAuth,
     private router: Router,
-    private firestore: AngularFirestore,
+    private db: AngularFireDatabase,
     private alertController: AlertController
   ) {}
 
@@ -38,17 +37,13 @@ export class RegisterPage {
 
       if (userCredential.user) {
         const uidUsuario = userCredential.user.uid;
+        this.userData.uidUsuario = uidUsuario; // Asigna el UID al objeto userData
 
-        // Utiliza la interfaz clientesI para definir los datos a guardar en Firestore
         const { password, ...clienteDataSinPassword } = this.userData;
 
-        // Guarda los datos del cliente en Firestore sin incluir la contraseña
-        await this.firestore.collection('clientes').doc(uidUsuario).set(clienteDataSinPassword);
+        await this.db.object(`/clientes/${uidUsuario}`).set(clienteDataSinPassword);
 
-        // Muestra el mensaje emergente de agradecimiento
         this.showRegistrationAlert();
-
-        // Redirige al usuario a la página de inicio después del registro
         this.router.navigate(['/home']);
       } else {
         console.error('El registro no fue exitoso.');

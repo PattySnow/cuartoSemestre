@@ -8,5 +8,7 @@ export const environment = {
     messagingSenderId: '174491079965',
     measurementId: 'G-GW6FNHPK25',
   },
+
+  google_maps_api_key: "AIzaSyDow6ZY2TWBPjp6fuM8WJRCFmuIwknywxM" ,
   production: true
 };
